@@ -1,2 +1,2 @@
 # odoo-docker-build
-Odoo project docker integrationsr
+Odoo project docker integrations
