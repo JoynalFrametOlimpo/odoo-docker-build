@@ -87,7 +87,7 @@ echo "$(tput setaf 1)****************** Levantando Servicios *******************
 make compose
 
 chmod -R 777 "$ODOO_PATH/13/"
-
+make logs
 
 
 
