@@ -11,7 +11,7 @@ services:
             - POSTGRES_PASSWORD=$DB_PASSWORD
             - POSTGRES_DB=postgres
         volumes:
-            - odoo-database:$DB_CONTAINER_PATH
+            - database:$DB_CONTAINER_PATH
         networks:
             - develop-network
     odoo-develop:
@@ -27,7 +27,7 @@ services:
         volumes:
             - $CONF_LOCAL_PATH:$CONF_CONTAINER_PATH
             - $EXTRA_ADDONS_LOCAL_PATH:$EXTRA_ADDONS_CONTAINER_PATH
-            - odoo-filestore:$ODOO_FILESTORE_CONTAINER_PATH
+            - filestore:$ODOO_FILESTORE_CONTAINER_PATH
         networks:
            - develop-network
         command: odoo -i base
@@ -63,5 +63,5 @@ networks:
      develop-network:
        driver: bridge
 volumes:
-     odoo-database:
-     odoo-filestore:
+     database:
+     filestore:
