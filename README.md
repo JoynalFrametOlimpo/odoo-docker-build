@@ -14,7 +14,7 @@ You need a way to put all together and make it work anywhere quickly.
 
 Then run these Bash commands:
 
-git https
+*git https
 ---------
 
 ```bash
@@ -23,8 +23,7 @@ cd odoo-project
 sudo sh install.sh
 ```
 
-
-git ssh
+*git ssh
 --------
 
 ```bash
