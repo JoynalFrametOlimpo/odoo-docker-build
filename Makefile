@@ -11,3 +11,5 @@ clear:
 	docker-compose rm -f
 prune:
 	docker system prune -af
+logs:
+	docker-compose logs -f --tail 20
