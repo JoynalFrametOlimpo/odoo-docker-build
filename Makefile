@@ -1,5 +1,5 @@
 build:
-  docker build -t odoo-ocb:13.0 -f .
+  docker build -t odoo:13.0 -f .
 
 compose:
   docker-compose up -d
