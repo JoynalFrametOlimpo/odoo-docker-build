@@ -19,8 +19,7 @@ Then run these Bash commands:
 
 ```bash
 git clone https://github.com/JoynalFrametOlimpo/odoo-docker-build.git odoo-project
-cd odoo-project
-sudo sh install.sh
+cd odoo-project/ && sudo sh install.sh
 ```
 
 #### git ssh
@@ -28,7 +27,6 @@ sudo sh install.sh
 
 ```bash
 git clone git@github.com:JoynalFrametOlimpo/odoo-docker-build.git odoo-project
-cd odoo-project
-sudo sh install.sh
+cd odoo-project/ && sudo sh install.sh
 ```
 
