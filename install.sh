@@ -70,7 +70,7 @@ if [ ! -d "$ODOO_PATH/13" ]; then
 fi
 
 # Build Odoo Image 
-Make build
+make build
 
 # Copy odoo configuration file in new project
 if [ ! -f "$ODOO_PATH/13/conf/odoo.conf" ]; then
@@ -82,7 +82,7 @@ chmod +x ./entrypoint.sh ./wait-for-psql.py
 chmod -R 777 "$ODOO_PATH/13/"
 
 echo "$(tput setaf 1)****************** Levantando Servicios *******************************$(tput setaf 3)"
-Make compose
+make compose
 
 chmod -R 777 "$ODOO_PATH/13/"
 
