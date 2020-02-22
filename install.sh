@@ -23,7 +23,9 @@ fi
 
 # Install docker - docker-compose
 . /etc/os-release
-SO=$ID# Install docker and docker-compose Centos
+SO=$ID
+
+# Install docker and docker-compose Centos
 if [ "$SO" = "centos" ]; then
      echo "$(tput setaf 4)***************** UPGRADE SO ************************************************$(tput setaf 3)"
      yum -y upgrade
