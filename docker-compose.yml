@@ -27,7 +27,7 @@ services:
         volumes:
             - $CONF_LOCAL_PATH:$CONF_CONTAINER_PATH
             - $EXTRA_ADDONS_LOCAL_PATH:$EXTRA_ADDONS_CONTAINER_PATH
-            - odoo-filestore:$OODO_FILESTORE_CONTAINER_PATH
+            - odoo-filestore:$ODOO_FILESTORE_CONTAINER_PATH
         networks:
            - develop-network
         command: odoo -i base

@@ -7,6 +7,7 @@ stop:
 start:
 	docker-compose start
 clear:
+	make stop
 	docker-compose rm -f
 prune:
 	docker system prune -af
