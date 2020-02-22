@@ -14,8 +14,21 @@ You need a way to put all together and make it work anywhere quickly.
 
 Then run these Bash commands:
 
+git https
+---------
+
 ```bash
 git clone https://github.com/JoynalFrametOlimpo/odoo-docker-build.git odoo-project
+cd odoo-project
+sudo sh install.sh
+```
+
+
+git ssh
+--------
+
+```bash
+git clone git@github.com:JoynalFrametOlimpo/odoo-docker-build.git odoo-project
 cd odoo-project
 sudo sh install.sh
 ```
