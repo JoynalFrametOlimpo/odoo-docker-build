@@ -18,6 +18,7 @@ RUN set -x; \
             curl \
             dirmngr \
             fonts-noto-cjk \
+            git \
             gnupg \
             libssl-dev \
             node-less \
