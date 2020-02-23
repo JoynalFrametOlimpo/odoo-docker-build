@@ -4,8 +4,10 @@ MAINTAINER JoynalFrametOlimpo
 ENV LANG C.UTF-8
 ENV TZ=America/Guayaquil
 ENV ODOO_VERSION 13.0
-ARG ODOO_RELEASE=20200212
-ARG ODOO_SHA=fdf0244f58e1eb85df5dd18a98c3fa61e26e089b
+ENV ODOO_DEPTH 1
+
+#ARG ODOO_RELEASE=20200212
+#ARG ODOO_SHA=fdf0244f58e1eb85df5dd18a98c3fa61e26e089b
 
 # Set Timezone
 RUN ln -sf /usr/share/zoneinfo/$TZ /etc/localtime
@@ -80,33 +82,40 @@ RUN set -x; \
 # create user Odoo
 RUN adduser --system --quiet --shell=/bin/bash --no-create-home --gecos 'ODOO' --group odoo
 
-RUN set -x; \
-        curl -o odoo.deb -sSL http://nightly.odoo.com/${ODOO_VERSION}/nightly/deb/odoo_${ODOO_VERSION}.${ODOO_RELEASE}_all.deb \
-        && echo "${ODOO_SHA} odoo.deb" | sha1sum -c - \
-        && dpkg --force-depends -i odoo.deb \
-        && apt-get update \
-        && apt-get -y install -f --no-install-recommends \
-        && rm -rf /var/lib/apt/lists/* odoo.deb
-
-# Copy entrypoint script and Odoo configuration file
+# Copy entrypoint script 
 COPY ./entrypoint.sh /
-COPY ./odoo.conf /etc/odoo/
-RUN chown odoo /etc/odoo/odoo.conf
 
-# Mount /var/lib/odoo to allow restoring filestore and /mnt/extra-addons for users addons
-RUN mkdir -p /mnt/extra-addons \
-        && chown -R odoo /mnt/extra-addons
-VOLUME ["/var/lib/odoo", "/mnt/extra-addons"]
+# Create odoo directory 
+RUN mkdir -p /opt/odoo/extra-addons \
+    && mkdir -p /opt/odoo/data \
+    && mkdir -p /opt/odoo/conf \
+    && chown -R odoo /opt/odoo
+
+# Copy odoo configuration
+COPY ./odoo.conf /opt/odoo/conf
+RUN chown odoo /opt/odoo/conf/odoo.conf
+
+# Mount volumes
+VOLUME ["/var/lib/odoo","/opt/odoo/data", "/opt/odoo/extra-addons"]
+
+# Clone odoo git proyect
+RUN git clone https://github.com/odoo/odoo.git -b $ODOO_VERSION --depth $ODOO_DEPTH /opt/odoo/odoo
+
+# Install odoo requirement
+RUN pip3 install -r /opt/odoo/odoo/requirements.txt
 
 # Expose Odoo services
 EXPOSE 8069 8071
 
 # Set the default config file
-ENV ODOO_RC /etc/odoo/odoo.conf
+ENV ODOO_RC /opt/odoo/conf/odoo.conf
 
 COPY wait-for-psql.py /usr/local/bin/wait-for-psql.py
 
 # Set default user when running the container
+RUN ln -s /opt/odoo/odoo/odoo-bin /usr/bin/odoo
+RUN chown -R odoo /var/lib/odoo /opt/odoo
+
 USER odoo
 
 ENTRYPOINT ["/entrypoint.sh"]
