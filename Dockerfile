@@ -77,6 +77,9 @@ RUN set -x; \
     npm install -g rtlcss --no-install-recommends
 
 # Install Odoo Release 13.0.20200212   FEB-12-2020
+# create user Odoo
+RUN adduser --system --quiet --shell=/bin/bash --no-create-home --gecos 'ODOO' --group odoo
+
 RUN set -x; \
         curl -o odoo.deb -sSL http://nightly.odoo.com/${ODOO_VERSION}/nightly/deb/odoo_${ODOO_VERSION}.${ODOO_RELEASE}_all.deb \
         && echo "${ODOO_SHA} odoo.deb" | sha1sum -c - \
