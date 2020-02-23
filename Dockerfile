@@ -2,9 +2,13 @@ FROM debian:buster-slim
 MAINTAINER JoynalFrametOlimpo
 
 ENV LANG C.UTF-8
+ENV TZ=America/Guayaquil
 ENV ODOO_VERSION 13.0
 ARG ODOO_RELEASE=20200212
 ARG ODOO_SHA=fdf0244f58e1eb85df5dd18a98c3fa61e26e089b
+
+# Set Timezone
+RUN ln -sf /usr/share/zoneinfo/$TZ /etc/localtime
 
 # Utility
 RUN set -x; \
