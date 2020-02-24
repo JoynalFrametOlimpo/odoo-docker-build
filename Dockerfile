@@ -6,9 +6,6 @@ ENV TZ=America/Guayaquil
 ENV ODOO_VERSION 13.0
 ENV ODOO_DEPTH 1
 
-#ARG ODOO_RELEASE=20200212
-#ARG ODOO_SHA=fdf0244f58e1eb85df5dd18a98c3fa61e26e089b
-
 # Set Timezone
 RUN ln -sf /usr/share/zoneinfo/$TZ /etc/localtime
 
@@ -78,7 +75,6 @@ RUN set -x; \
 RUN set -x; \
     npm install -g rtlcss --no-install-recommends
 
-# Install Odoo Release 13.0.20200212   FEB-12-2020
 # create user Odoo
 RUN adduser --system --quiet --shell=/bin/bash --no-create-home --gecos 'ODOO' --group odoo
 
@@ -89,6 +85,7 @@ COPY ./entrypoint.sh /
 RUN mkdir -p /opt/odoo/extra-addons \
     && mkdir -p /opt/odoo/data \
     && mkdir -p /opt/odoo/conf \
+    && mkdir -p /opt/odoo/src \
     && chown -R odoo /opt/odoo
 
 # Copy odoo configuration
@@ -96,13 +93,12 @@ COPY ./odoo.conf /opt/odoo/conf
 RUN chown odoo /opt/odoo/conf/odoo.conf
 
 # Mount volumes
-VOLUME ["/var/lib/odoo","/opt/odoo/data", "/opt/odoo/extra-addons"]
-
-# Clone odoo git proyect
-RUN git clone https://github.com/odoo/odoo.git -b $ODOO_VERSION --depth $ODOO_DEPTH /opt/odoo/odoo
+VOLUME ["/var/lib/odoo","/opt/odoo/data", "/opt/odoo/extra-addons", "/opt/odoo/src"]
 
 # Install odoo requirement
-RUN pip3 install -r /opt/odoo/odoo/requirements.txt
+ENV ODOO_SOURCE odoo/odoo
+RUN pip3 install \
+        -r https://raw.githubusercontent.com/$ODOO_SOURCE/$ODOO_VERSION/requirements.txt
 
 # Expose Odoo services
 EXPOSE 8069 8071
@@ -113,10 +109,13 @@ ENV ODOO_RC /opt/odoo/conf/odoo.conf
 COPY wait-for-psql.py /usr/local/bin/wait-for-psql.py
 
 # Set default user when running the container
-RUN ln -s /opt/odoo/odoo/odoo-bin /usr/bin/odoo
-RUN chown -R odoo /var/lib/odoo /opt/odoo
+ONBUILD RUN ln -s /opt/odoo/src/odoo-bin /usr/bin/odoo
+ONBUILD RUN chown -R odoo /var/lib/odoo /opt/odoo
+ONBUILD RUN mkdir /opt/odoo/prueba
 
-USER odoo
+ONBUILD USER odoo
 
-ENTRYPOINT ["/entrypoint.sh"]
-CMD ["odoo"]
+ONBUILD ENTRYPOINT ["/entrypoint.sh"]
+
+ONBUILD CMD ["odoo"]
+ONBUILD VOLUME = ["/opt/odoo/src"]
