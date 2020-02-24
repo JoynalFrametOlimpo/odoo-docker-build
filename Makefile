@@ -1,5 +1,7 @@
+build-base:
+	docker build -f Dockerfile  -t odoo-base:13.0 .
 build:
-	docker build -f Dockerfile  -t odoo:13.0 .
+        docker build -f repo-src.yml -t odoo:13.0 .
 compose:
 	docker-compose up -d
 stop:
