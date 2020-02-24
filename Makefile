@@ -1,5 +1,5 @@
 build:
-	docker build -f Dockerfile  -t odoo-nuevo:13.0 .
+	docker build -f Dockerfile  -t odoo:13.0 .
 compose:
 	docker-compose up -d
 stop:

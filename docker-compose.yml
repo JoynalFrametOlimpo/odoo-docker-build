@@ -28,9 +28,10 @@ services:
             - $CONF_LOCAL_PATH:$CONF_CONTAINER_PATH
             - $EXTRA_ADDONS_LOCAL_PATH:$EXTRA_ADDONS_CONTAINER_PATH
             - filestore:$ODOO_FILESTORE_CONTAINER_PATH
+            - ./odoo-develop/13/src:/opt/odoo/src
+        command: odoo -i base
         networks:
            - develop-network
-        command: odoo -i base
         environment:
             - DB_PORT_5432_TCP_ADDR=db-develop
             - DB_PORT_5432_TCP_PORT=5432

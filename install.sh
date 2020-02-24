@@ -2,6 +2,7 @@
 # Author: Joynal Framet Olimpo - 2020
 
 ODOO_PATH="./odoo-develop"
+ODOO_VERSION="13.0"
 
 # Date Config
 if [ -f /etc/localtime/ ]; then
@@ -71,7 +72,15 @@ if [ ! -d "$ODOO_PATH/13" ]; then
     mkdir -p "$ODOO_PATH/13"
 fi
 
-# Build Odoo Image 
+# Build Odoo-Base Image without source
+docker build -f repo-src.yml -t odoo:$ODOO_VERSION
+
+# Donwload odoo git
+echo "$(tput setaf 4)***************** Clonando proyecto de Odoo de la comunidad de Odoo en Github *********************$(tput setaf 3)"
+mkdir "$ODOO_PATH/13/src/" && git clone --depth 1 https://github.com/odoo/odoo.git "$ODOO_PATH/13/src/" 
+
+# Build Image Odoo
+echo "$(tput setaf 4)***************** Construyendo imagen  *********************$(tput setaf 3)"
 make build
 
 # Copy odoo configuration file in new project
