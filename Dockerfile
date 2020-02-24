@@ -110,8 +110,8 @@ COPY wait-for-psql.py /usr/local/bin/wait-for-psql.py
 
 # Set default user when running the container
 ONBUILD RUN ln -s /opt/odoo/src/odoo-bin /usr/bin/odoo
-ONBUILD RUN chown -R odoo /var/lib/odoo /opt/odoo
-ONBUILD RUN mkdir /opt/odoo/prueba
+ONBUILD RUN chown -R odoo:odoo /var/lib/odoo 
+ONBUILD RUN chown -R odoo:odoo /opt/odoo
 
 ONBUILD USER odoo
 
