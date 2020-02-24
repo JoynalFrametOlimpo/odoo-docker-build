@@ -72,15 +72,16 @@ if [ ! -d "$ODOO_PATH/13" ]; then
     mkdir -p "$ODOO_PATH/13"
 fi
 
-# Build Image Odoo-base
+# Build Image Odoo-base without source
 echo "$(tput setaf 4)***************** Construyendo imagen odoo base sin fuente *********************$(tput setaf 3)"
 make build-base
 
 # Donwload odoo git
 echo "$(tput setaf 4)***************** Clonando proyecto de Odoo de la comunidad de Odoo en Github *********************$(tput setaf 3)"
 mkdir "$ODOO_PATH/13/src/" && git clone --depth 1 https://github.com/odoo/odoo.git "$ODOO_PATH/13/src/" 
+chmod -R 777 "$ODOO_PATH/13/"
 
-# Build Odoo-Base Image without source
+# Build Odoo-Base Image 
 echo "$(tput setaf 4)***************** Construyendo imagen odoo:13.0 *********************$(tput setaf 3)"
 make build
 
