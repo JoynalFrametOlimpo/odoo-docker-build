@@ -92,6 +92,10 @@ RUN mkdir -p /opt/odoo/extra-addons \
 COPY ./odoo.conf /opt/odoo/conf
 RUN chown odoo /opt/odoo/conf/odoo.conf
 
+# directory permission
+RUN mkdir -p /var/lib/odoo \
+    && chown -R odoo:odoo /var/lib/odoo
+
 # Mount volumes
 VOLUME ["/var/lib/odoo","/opt/odoo/data", "/opt/odoo/extra-addons", "/opt/odoo/src"]
 
@@ -110,8 +114,8 @@ COPY wait-for-psql.py /usr/local/bin/wait-for-psql.py
 
 # Set default user when running the container
 ONBUILD RUN ln -s /opt/odoo/src/odoo-bin /usr/bin/odoo
-ONBUILD RUN chown -R odoo:odoo /var/lib/odoo 
 ONBUILD RUN chown -R odoo:odoo /opt/odoo
+ONBUILD RUN chown -R odoo:odoo /var/lib/odoo
 
 ONBUILD USER odoo
 
@@ -119,3 +123,5 @@ ONBUILD ENTRYPOINT ["/entrypoint.sh"]
 
 ONBUILD CMD ["odoo"]
 ONBUILD VOLUME = ["/opt/odoo/src"]
+
+
