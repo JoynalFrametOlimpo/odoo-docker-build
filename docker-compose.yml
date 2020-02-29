@@ -30,7 +30,7 @@ services:
             - $EXTRA_ADDONS_LOCAL_PATH:$EXTRA_ADDONS_CONTAINER_PATH
             - filestore:$ODOO_FILESTORE_CONTAINER_PATH
             - ./odoo-develop/13/src:/opt/odoo/src
-        command: odoo -i base
+        command: odoo --dev=reload,qweb,werkzeug,xml
         networks:
            - develop-network
         environment:
@@ -40,8 +40,10 @@ services:
             - DB_ENV_POSTGRES_PASSWORD=$DB_PASSWORD
             - DB_ENV_POSTGRES_DB=postgres
             - ADMIN_PASS=$ODOO_ADMIN_PASS
-            - WDB_SOCKET_SERVER:"wdb"
-            - WDB_NO_BROWSER_AUTO_OPEN:"True"
+            - WDB_NO_BROWSER_AUTO_OPEN:True
+            - WDB_SOCKET_SERVER:wdb
+            - WDB_WEB_PORT:1984
+            - WDB_WEB_SERVER:localhost
     pgadmin4-develop:
         image: $PGADMIN_IMAGE:$PGADMIN_VERSION
         container_name: pgadmin4-develop
@@ -62,6 +64,8 @@ services:
         container_name: wdb
         ports:
             - "1984:1984"
+        networks:
+           - develop-network
         restart: unless-stopped    
 networks:
      develop-network:

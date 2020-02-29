@@ -135,6 +135,11 @@ ENV WDB_NO_BROWSER_AUTO_OPEN=True \
     WDB_WEB_PORT=1984 \
     WDB_WEB_SERVER=localhost
 
+RUN set -x; \
+        apt-get update \
+       && apt-get install python-pip -y \
+       && pip install wdb.server
+
 RUN wdb.server.py &
 
 USER odoo
