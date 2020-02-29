@@ -28,8 +28,6 @@ SO=$ID
 
 # Install docker and docker-compose Centos
 if [ "$SO" = "centos" ]; then
-     echo "$(tput setaf 4)***************** UPGRADE SO ************************************************$(tput setaf 3)"
-     yum -y upgrade
      echo "(tput setaf 4)***************** UPDATE SO ************************************************$(tput setaf 3)"
      yum -y update
      echo "(tput setaf 4)***************** INSTALLING DEPENDS ***************************************$(tput setaf 3)"
@@ -53,8 +51,6 @@ if [ "$SO" = "centos" ]; then
 fi
 
 if [ "$SO" = "ubuntu" ]; then
-     echo "$(tput setaf 4)***************** UPGRADE SO ************************************************$(tput setaf 3)"
-     apt-get upgrade -y
      echo "$(tput setaf 4)***************** UPDATE SO ************************************************$(tput setaf 3)"
      apt-get update -y
      echo "$(tput setaf 4)***************** INSTALL DOCKER ******************************************$(tput setaf 3)"
