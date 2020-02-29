@@ -1,4 +1,4 @@
-FROM debian:buster-slim
+FROM debian:buster-slim AS odoo-base
 MAINTAINER JoynalFrametOlimpo
 
 ENV LANG C.UTF-8
@@ -101,8 +101,18 @@ VOLUME ["/var/lib/odoo","/opt/odoo/data", "/opt/odoo/extra-addons", "/opt/odoo/s
 
 # Install odoo requirement
 ENV ODOO_SOURCE odoo/odoo
-RUN pip3 install \
-        -r https://raw.githubusercontent.com/$ODOO_SOURCE/$ODOO_VERSION/requirements.txt
+
+RUN set -x; \
+         apt-get update \
+         && pip3 install \
+        -r https://raw.githubusercontent.com/$ODOO_SOURCE/$ODOO_VERSION/requirements.txt \
+         wheel \
+         wdb \
+         wdb.server \
+    && (python3 -m compileall -q /usr/local/lib/python3.7/ || true) \
+    && apt-get purge -yqq $build_deps \
+    && apt-get autopurge -yqq \
+    && rm -Rf /var/lib/apt/lists/* /tmp/*
 
 # Expose Odoo services
 EXPOSE 8069 8071
@@ -112,16 +122,25 @@ ENV ODOO_RC /opt/odoo/conf/odoo.conf
 
 COPY wait-for-psql.py /usr/local/bin/wait-for-psql.py
 
+
+FROM odoo-base
+
 # Set default user when running the container
-ONBUILD RUN ln -s /opt/odoo/src/odoo-bin /usr/bin/odoo
-ONBUILD RUN chown -R odoo:odoo /opt/odoo
-ONBUILD RUN chown -R odoo:odoo /var/lib/odoo
+RUN ln -s /opt/odoo/src/odoo-bin /usr/bin/odoo
+RUN chown -R odoo:odoo /opt/odoo
+RUN chown -R odoo:odoo /var/lib/odoo
 
-ONBUILD USER odoo
+ENV WDB_NO_BROWSER_AUTO_OPEN=True \
+    WDB_SOCKET_SERVER=wdb \
+    WDB_WEB_PORT=1984 \
+    WDB_WEB_SERVER=localhost
 
-ONBUILD ENTRYPOINT ["/entrypoint.sh"]
+RUN wdb.server.py &
 
-ONBUILD CMD ["odoo"]
-ONBUILD VOLUME = ["/opt/odoo/src"]
+USER odoo
+ENTRYPOINT ["/entrypoint.sh"]
+
+CMD ["odoo"]
+VOLUME = ["/opt/odoo/src"]
 
 

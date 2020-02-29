@@ -22,6 +22,7 @@ services:
             - db-develop
         links:
             - db-develop
+            - wdb            
         ports:
             - "8047:8069"
         volumes:
@@ -39,6 +40,8 @@ services:
             - DB_ENV_POSTGRES_PASSWORD=$DB_PASSWORD
             - DB_ENV_POSTGRES_DB=postgres
             - ADMIN_PASS=$ODOO_ADMIN_PASS
+            - WDB_SOCKET_SERVER:"wdb"
+            - WDB_NO_BROWSER_AUTO_OPEN:"True"
     pgadmin4-develop:
         image: $PGADMIN_IMAGE:$PGADMIN_VERSION
         container_name: pgadmin4-develop
