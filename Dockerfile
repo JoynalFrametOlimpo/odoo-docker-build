@@ -126,9 +126,11 @@ COPY wait-for-psql.py /usr/local/bin/wait-for-psql.py
 FROM odoo-base
 
 # Set default user when running the container
-RUN ln -s /opt/odoo/src/odoo-bin /usr/bin/odoo
+RUN ls -la /opt/odoo/src
 RUN chown -R odoo:odoo /opt/odoo
 RUN chown -R odoo:odoo /var/lib/odoo
+RUN ln -s /opt/odoo/src/odoo-bin /usr/bin/odoo
+RUN ls -la /opt/odoo/src
 
 ENV WDB_NO_BROWSER_AUTO_OPEN=True \
     WDB_SOCKET_SERVER=wdb \

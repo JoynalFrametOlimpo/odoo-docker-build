@@ -29,7 +29,7 @@ services:
             - $CONF_LOCAL_PATH:$CONF_CONTAINER_PATH
             - $EXTRA_ADDONS_LOCAL_PATH:$EXTRA_ADDONS_CONTAINER_PATH
             - filestore:$ODOO_FILESTORE_CONTAINER_PATH
-            - ./odoo-develop/13/src:/opt/odoo/src
+            - $ODOO_LOCAL_SRC:$ODOO_CONTAINER_SRC
         command: odoo --dev=reload,qweb,werkzeug,xml
         networks:
            - develop-network

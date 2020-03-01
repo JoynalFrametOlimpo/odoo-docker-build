@@ -68,17 +68,17 @@ if [ ! -d "$ODOO_PATH/13" ]; then
     mkdir -p "$ODOO_PATH/13"
 fi
 
-# Build Image Odoo-base without source
-#echo "$(tput setaf 4)***************** Construyendo imagen odoo base sin fuente *********************$(tput setaf 3)"
-#make build-base
-
 # Donwload odoo git
+if [ ! -d "$ODOO_PATH/13/src/" ]; then
 echo "$(tput setaf 4)***************** Clonando proyecto de Odoo de la comunidad de Odoo en Github *********************$(tput setaf 3)"
 mkdir "$ODOO_PATH/13/src/" && git clone --depth 1 https://github.com/odoo/odoo.git "$ODOO_PATH/13/src/" 
+fi
 
-# Build Odoo-Base Image 
+chmod -R 777 "$ODOO_PATH/13/"
+
+# Build Odoo Image
 #echo "$(tput setaf 4)***************** Construyendo imagen odoo:13.0 *********************$(tput setaf 3)"
-#make build
+make build
 
 # Copy odoo configuration file in new project
 if [ ! -f "$ODOO_PATH/13/conf/odoo.conf" ]; then
@@ -90,10 +90,10 @@ chmod +x ./entrypoint.sh ./wait-for-psql.py
 chmod -R 777 "$ODOO_PATH/13/"
 
 #echo "$(tput setaf 1)****************** Levantando Servicios *******************************$(tput setaf 3)"
-#make compose
+make compose
 
-#chmod -R 777 "$ODOO_PATH/13/"
-#make logs
+chmod -R 777 "$ODOO_PATH/13/"
+make logs
 
 
 
