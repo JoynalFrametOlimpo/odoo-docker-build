@@ -14,4 +14,6 @@ prune:
 logs:
 	docker-compose logs -f --tail 20
 scaffold:
-	sudo docker exec -it -u 0 odoo-develop odoo scaffold $(name) /opt/odoo/extra-addons
+	docker exec -it -u 0 odoo-develop odoo scaffold $(name) /opt/odoo/extra-addons
+odoo-restart:
+	docker restart odoo-develop/ && docker logs -f odoo-develop/ --tail $(line)
