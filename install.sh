@@ -51,17 +51,20 @@ if [ "$SO" = "centos" ]; then
 fi
 
 if [ "$SO" = "ubuntu" ]; then
-     echo "$(tput setaf 4)***************** UPDATE SO ************************************************$(tput setaf 3)"
-     apt-get update -y
-     echo "$(tput setaf 4)***************** INSTALL DOCKER ******************************************$(tput setaf 3)"
-     apt-get -y install docker.io --no-install-recommends
-     echo "$(tput setaf 4)***************** INSTALL DOCKER-COMPOSE******************************************$(tput setaf 3)"
-     apt-get -y install docker-compose --no-install-recommends
-     echo "$(tput setaf 4)***************** INFORMATION DOCKER******************************************$(tput setaf 3)"
-     groupadd docker
-     usermod -aG docker $USER
-     docker version
-     docker-compose version
+  if [ ! -e /usr/bin/docker ] || [ ! -e /usr/bin/docker-compose ]; then
+        echo "$(tput setaf 4)***************** UPDATE SO ************************************************$(tput setaf 3)"
+        apt-get update
+                if [ ! -e /usr/bin/docker ]; then
+			echo "$(tput setaf 4)***************** INSTALL DOCKER ******************************************$(tput setaf 3)"
+                        apt-get -y install docker.io --no-install-recommends
+                        groupadd docker
+                        usermod -aG docker $USER
+                fi
+                if [ ! -e /usr/bin/docker-compose ]; then
+                        echo "$(tput setaf 4)***************** INSTALL DOCKER-COMPOSE******************************************$(tput setaf 3)"
+			apt-get -y install docker-compose --no-install-recommends
+                fi
+  fi
 fi
 
 if [ ! -d "$ODOO_PATH/13" ]; then
