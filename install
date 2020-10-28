@@ -1,0 +1,109 @@
+#!/bin/bash
+# Config and Install Odoo Server
+# Author: Joynal Framet Olimpo - Oct 2020
+
+ODOO_PATH="./odoo"
+ODOO_VERSION="14.0"
+
+# Set local datetime
+if [ -f /etc/localtime/ ]; then
+  cp /usr/share/zoneinfo/America/Guayaquil /etc/localtime
+fi
+
+dt=$(date '+%d-%m-%Y--%H-%M-%S')
+
+# Create backup environment directory
+if [ ! -d ./backup-environment ]; then
+    mkdir ./backup-environment
+fi
+
+# Make Backup folder for security reason
+if [ -d ./odoo ]; then
+     echo "(tput setaf 4)***************** There is an installation in current directory, copying to backup folder for security ********************$(tput setaf 3)"
+     mv ./odoo "./backup-environment/odoo.$dt"
+     rm -rf "$ODOO_PATH"
+fi
+
+if [ -e  "./.env" ]; then
+    mv ./.env "./backup-environment/odoo.$dt/"
+fi
+
+# Install docker - docker-compose
+. /etc/os-release
+SO=$ID
+
+# Install docker and docker-compose (Centos)
+if [ "$SO" = "centos" ]; then
+     echo "(tput setaf 4)***************** Updating System ... ************************************************$(tput setaf 3)"
+     yum -y update
+     echo "(tput setaf 4)***************** Instaling project dependencies ... ***************************************$(tput setaf 3)"
+     yum install -y yum-utils device-mapper-persistent-data lvm2 --no-install-recommends
+     yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+     echo "(tput setaf 4)***************** Instaling Docker ... ******************************************$(tput setaf 3)"
+     yum install -y docker-ce
+     usermod -aG docker $(whoami)
+     gpasswd -a ${USER} docker
+     systemctl enable docker.service
+     systemctl start docker.service
+     yum install -y epel-release
+     echo "(tput setaf 4)*************** Instaling Python-pip ... ****************************************$(tput setaf 3)"
+     yum install -y python-pip --no-install-recommends
+     echo "(tput setaf 4)************** Instaling DockerCompose .... *************************************$(tput setaf 3)"
+     pip install docker-compose --no-install-recommends
+     echo "(tput setaf 4)************* Upgrading Python ... *********************************************$(tput setaf 3)"
+     yum -y upgrade python --no-install-recommends
+     docker version
+     docker-compose version
+fi
+
+# Install docker and docker-compose (Ubuntu)
+if [ "$SO" = "ubuntu" ]; then
+  if [ ! -e /usr/bin/docker ] || [ ! -e /usr/bin/docker-compose ]; then
+        echo "$(tput setaf 4)***************** Updating System ....  ************************************************$(tput setaf 3)"
+        apt-get update
+                if [ ! -e /usr/bin/docker ]; then
+			echo "$(tput setaf 4)***************** Instaling DOCKER ... ******************************************$(tput setaf 3)"
+                        apt-get -y install docker.io --no-install-recommends
+                        groupadd docker
+                        usermod -aG docker $USER
+                        newgrp docker
+                fi
+                if [ ! -e /usr/bin/docker-compose ]; then
+                        echo "$(tput setaf 4)***************** Instaling DockerCompose ... ******************************************$(tput setaf 3)"
+			apt-get -y install docker-compose --no-install-recommends
+                fi
+  fi
+fi
+
+if [ ! -d "$ODOO_PATH/14" ]; then
+    mkdir -p "$ODOO_PATH/14"
+fi
+
+# Generate odoo configuration file in new project
+if [ ! -f "$ODOO_PATH/14/conf/odoo.conf" ]; then
+    echo "$(tput setaf 4)***************** Creating odoo.conf inside project path ... *********************$(tput setaf 3)"
+    mkdir "$ODOO_PATH/14/conf/"
+    ## build odoo file
+        echo "$(tput setaf 4)***************** Building odoo.conf  *********>"
+        sh ./script/conf
+fi
+
+# Building Odoo Image
+echo "$(tput setaf 4)***************** Building odoo image odoo:14.0 ... *********************$(tput setaf 3)"
+make build
+
+
+# Generate environment file
+echo "$(tput setaf 4)***************** Building env .... *********************$(tput setaf 3)"
+sh ./script/env
+
+
+chmod +x ./entrypoint.sh ./wait-for-psql.py
+chmod -R 755 "$ODOO_PATH/14/"
+
+echo "$(tput setaf 4)****************** Up services .... *******************************$(tput setaf 3)"
+make compose
+
+chmod -R 755 "$ODOO_PATH/14/"
+make logs
+
