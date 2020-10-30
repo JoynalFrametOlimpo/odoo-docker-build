@@ -7,17 +7,12 @@ SHELL ["/bin/bash", "-xo", "pipefail", "-c"]
 ENV LANG C.UTF-8
 ENV TZ=America/Guayaquil
 
-# Env Odoo versión
-ENV ODOO_VERSION 14.0
-ARG ODOO_RELEASE=20201002
-ARG ODOO_SHA=70917e1db8d100c791f31afbfcd782dd026bd4c9
-ENV ODOO_DEPTH 1
-
 # Set timezone
 RUN ln -sf /usr/share/zoneinfo/$TZ /etc/localtime
 
 # Install some deps, lessc and less-plugin-clean-css, and wkhtmltopdf
-RUN apt-get update && \
+RUN set -x; \
+    apt-get update && \
     apt-get install -y --no-install-recommends \
         ca-certificates \
         curl \
@@ -47,24 +42,23 @@ RUN apt-get update && \
     && rm -rf /var/lib/apt/lists/* wkhtmltox.deb
 
 # install latest postgresql-client
-RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ buster-pgdg main' > /etc/apt/sources.list.d/pgdg.list \
-    && GNUPGHOME="$(mktemp -d)" \
-    && export GNUPGHOME \
-    && repokey='B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8' \
-    && gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "${repokey}" \
-    && gpg --batch --armor --export "${repokey}" > /etc/apt/trusted.gpg.d/pgdg.gpg.asc \
-    && gpgconf --kill all \
-    && rm -rf "$GNUPGHOME" \
-    && apt-get update  \
-    && apt-get install --no-install-recommends -y postgresql-client \
-    && rm -f /etc/apt/sources.list.d/pgdg.list \
+RUN set -x; \
+    apt-get update  \
+    && apt-get install -y postgresql-client --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
+
 
 # Install rtlcss (on Debian buster)
 RUN npm install -g rtlcss
 
 # Install Odoo
-RUN curl -o odoo.deb -sSL http://nightly.odoo.com/${ODOO_VERSION}/nightly/deb/odoo_${ODOO_VERSION}.${ODOO_RELEASE}_all.deb \
+ENV ODOO_VERSION=14.0
+ENV ODOO_DEPTH 1
+
+RUN export ODOO_RELEASE=$(date +'%Y%m%d' -d "1 day ago") \
+    && export ODOO_SHA=$(curl -s http://nightly.odoo.com/${ODOO_VERSION}/nightly/deb/odoo_${ODOO_VERSION}.${ODOO_RELEASE}_amd64.changes \
+       | grep _all.deb | head -1 | awk '{print $1}') \
+    && curl -o odoo.deb -sSL http://nightly.odoo.com/${ODOO_VERSION}/nightly/deb/odoo_${ODOO_VERSION}.${ODOO_RELEASE}_all.deb \
     && echo "${ODOO_SHA} odoo.deb" | sha1sum -c - \
     && apt-get update \
     && apt-get -y install --no-install-recommends ./odoo.deb \
