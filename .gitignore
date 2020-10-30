@@ -2,3 +2,4 @@ backup-environment/
 odoo-develop/
 .env
 .idea
+odoo/

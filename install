@@ -104,6 +104,7 @@ chmod -R 755 "$ODOO_PATH/14/"
 echo "$(tput setaf 4)****************** Up services .... *******************************$(tput setaf 3)"
 make compose
 
-chmod -R 755 "$ODOO_PATH/14/"
+#chmod -R 755 "$ODOO_PATH/14/"
+chown -R $USER "$ODOO_PATH/14/"
 make logs
 
