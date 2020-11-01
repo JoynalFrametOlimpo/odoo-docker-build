@@ -13,7 +13,7 @@
         echo CONF_CONTAINER_PATH=/etc/odoo ; \
         echo "\n# Customs Adddons" ; \
         echo EXTRA_ADDONS_LOCAL_PATH=./odoo/14/extra-addons ; \
-        echo EXTRA_ADDONS_CONTAINER_PATH=/opt/mnt/extra-addons ; \
+        echo EXTRA_ADDONS_CONTAINER_PATH=/mnt/extra-addons ; \
         echo "\n# Odoo Filestore session" ; \
         echo ODOO_FILESTORE_CONTAINER_PATH=/var/lib/odoo ; \
         echo "\n# Postgres Parameters" ; \
