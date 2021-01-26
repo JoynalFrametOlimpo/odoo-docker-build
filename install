@@ -54,10 +54,12 @@ if [ "$SO" = "centos" ]; then
      yum -y upgrade python --no-install-recommends
      docker version
      docker-compose version
+     yum -y install make
 fi
 
 # Install docker and docker-compose (Ubuntu)
 if [ "$SO" = "ubuntu" ]; then
+apt-get install make
   if [ ! -e /usr/bin/docker ] || [ ! -e /usr/bin/docker-compose ]; then
         echo "$(tput setaf 4)***************** Updating System ....  ************************************************$(tput setaf 3)"
         apt-get update
