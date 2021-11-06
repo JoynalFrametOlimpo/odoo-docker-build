@@ -3,7 +3,7 @@
 # Author: Joynal Framet Olimpo - Oct 2020
 
 ODOO_PATH="./odoo"
-ODOO_VERSION="14.0"
+ODOO_VERSION="15.0"
 
 # Set local datetime
 if [ -f /etc/localtime/ ]; then
@@ -77,14 +77,14 @@ apt-get install make
   fi
 fi
 
-if [ ! -d "$ODOO_PATH/14" ]; then
-    mkdir -p "$ODOO_PATH/14"
+if [ ! -d "$ODOO_PATH/15" ]; then
+    mkdir -p "$ODOO_PATH/15"
 fi
 
 # Generate odoo configuration file in new project
-if [ ! -f "$ODOO_PATH/14/conf/odoo.conf" ]; then
+if [ ! -f "$ODOO_PATH/15/conf/odoo.conf" ]; then
     echo "$(tput setaf 4)***************** Creating odoo.conf inside project path ... *********************$(tput setaf 3)"
-    mkdir "$ODOO_PATH/14/conf/"
+    mkdir "$ODOO_PATH/15/conf/"
     ## build odoo file
         echo "$(tput setaf 4)***************** Building odoo.conf  *********>"
         sh ./script/conf
@@ -101,12 +101,12 @@ sh ./script/env
 
 
 chmod +x ./entrypoint.sh ./wait-for-psql.py
-chmod -R 755 "$ODOO_PATH/14/"
+chmod -R 755 "$ODOO_PATH/15/"
 
 echo "$(tput setaf 4)****************** Up services .... *******************************$(tput setaf 3)"
 make compose
 
-#chmod -R 755 "$ODOO_PATH/14/"
-chown -R $USER "$ODOO_PATH/14/"
+#chmod -R 755 "$ODOO_PATH/15/"
+chown -R $USER "$ODOO_PATH/15/"
 make logs
 
