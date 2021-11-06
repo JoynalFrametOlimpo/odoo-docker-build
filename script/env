@@ -5,20 +5,20 @@
 
       ( echo "\n# Odoo Parameters" ; \
         echo ODOO_IMAGE=odoo ; \
-        echo ODOO_VERSION=15.0 ; \
+        echo ODOO_VERSION=14.0 ; \
         echo ODOO_PROXY_MODE=true ;  \
         echo ODOO_ADMIN_PASS=$(openssl rand -base64 32) ; \
         echo "\n# Odoo.conf" ; \
-        echo CONF_LOCAL_PATH=./odoo/15/conf ; \
+        echo CONF_LOCAL_PATH=./odoo/14/conf ; \
         echo CONF_CONTAINER_PATH=/etc/odoo ; \
         echo "\n# Customs Adddons" ; \
-        echo EXTRA_ADDONS_LOCAL_PATH=./odoo/15/extra-addons ; \
+        echo EXTRA_ADDONS_LOCAL_PATH=./odoo/14/extra-addons ; \
         echo EXTRA_ADDONS_CONTAINER_PATH=/mnt/extra-addons ; \
         echo "\n# Odoo Filestore session" ; \
         echo ODOO_FILESTORE_CONTAINER_PATH=/var/lib/odoo ; \
         echo "\n# Postgres Parameters" ; \
         echo DB_IMAGE=postgres ; \
-        echo DB_VERSION=13-alpine ; \
+        echo DB_VERSION=12-alpine ; \
         echo DB_NAME=odoo ; \
         echo DB_USER=odoo ; \
         echo DB_filter=.* ; \
