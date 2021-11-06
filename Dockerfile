@@ -52,7 +52,7 @@ RUN set -x; \
 RUN npm install -g rtlcss
 
 # Install Odoo
-ENV ODOO_VERSION=14.0
+ENV ODOO_VERSION=15.0
 ENV ODOO_DEPTH 1
 
 RUN export ODOO_RELEASE=$(date +'%Y%m%d' -d "1 day ago") \
@@ -66,7 +66,7 @@ RUN export ODOO_RELEASE=$(date +'%Y%m%d' -d "1 day ago") \
 
 # Copy entrypoint script and Odoo configuration file
 COPY ./entrypoint.sh /
-COPY ./odoo/14/conf/odoo.conf /etc/odoo/
+COPY ./odoo/15/conf/odoo.conf /etc/odoo/
 
 # Set permissions and Mount /var/lib/odoo to allow restoring filestore and /mnt/extra-addons for users addons
 RUN chown odoo /etc/odoo/odoo.conf \

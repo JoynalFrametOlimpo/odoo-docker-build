@@ -30,5 +30,5 @@ git clone git@github.com:JoynalFrametOlimpo/odoo-docker-build.git odoo-project
 cd odoo-project/ && sudo sh install
 ```
 
-2020
+Noviembre 2021
 
