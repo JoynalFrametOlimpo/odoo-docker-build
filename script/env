@@ -18,7 +18,7 @@
         echo ODOO_FILESTORE_CONTAINER_PATH=/var/lib/odoo ; \
         echo "\n# Postgres Parameters" ; \
         echo DB_IMAGE=postgres ; \
-        echo DB_VERSION=13-alpine ; \
+        echo DB_VERSION=14-alpine ; \
         echo DB_NAME=odoo ; \
         echo DB_USER=odoo ; \
         echo DB_filter=.* ; \
