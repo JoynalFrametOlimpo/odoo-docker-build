@@ -5,6 +5,9 @@
 ODOO_PATH="./odoo"
 ODOO_VERSION="15.0"
 
+# Upgrade && Update
+apt upgrade && apt get update
+
 # Set local datetime
 if [ -f /etc/localtime/ ]; then
   cp /usr/share/zoneinfo/America/Guayaquil /etc/localtime
@@ -32,6 +35,7 @@ fi
 . /etc/os-release
 SO=$ID
 
+echo $SO
 # Install docker and docker-compose (Centos)
 if [ "$SO" = "centos" ]; then
      echo "(tput setaf 4)***************** Updating System ... ************************************************$(tput setaf 3)"
@@ -65,7 +69,7 @@ apt-get install make
         apt-get update
                 if [ ! -e /usr/bin/docker ]; then
 			echo "$(tput setaf 4)***************** Instaling DOCKER ... ******************************************$(tput setaf 3)"
-                        apt-get -y install docker.io --no-install-recommends
+                        snap install docker
                         groupadd docker
                         usermod -aG docker $USER
                         newgrp docker

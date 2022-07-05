@@ -17,4 +17,5 @@ scaffold:
 	docker exec -it -u 0 odoo-develop odoo scaffold $(name) /opt/odoo/extra-addons
 odoo-restart:
 	docker restart odoo-develop/ && docker logs -f odoo-develop/ --tail $(line)
-
+uninstall:
+	snap remove docker && apt autoremove docker-compose -y && rm -rf ./backup-environment && delgroup docker 

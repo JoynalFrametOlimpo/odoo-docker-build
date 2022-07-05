@@ -1,4 +1,4 @@
-FROM debian:buster-slim
+FROM ubuntu:20.04
 MAINTAINER JoynalFrametOlimpo
 
 SHELL ["/bin/bash", "-xo", "pipefail", "-c"]
