@@ -1,5 +1,4 @@
-FROM ubuntu:20.04
-MAINTAINER JoynalFrametOlimpo
+FROM debian:bullseye-slim
 
 SHELL ["/bin/bash", "-xo", "pipefail", "-c"]
 
@@ -11,8 +10,7 @@ ENV TZ=America/Guayaquil
 RUN ln -sf /usr/share/zoneinfo/$TZ /etc/localtime
 
 # Install some deps, lessc and less-plugin-clean-css, and wkhtmltopdf
-RUN set -x; \
-    apt-get update && \
+RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         ca-certificates \
         curl \
@@ -36,10 +34,11 @@ RUN set -x; \
         python3-xlrd \
         python3-xlwt \
         xz-utils \
-    && curl -o wkhtmltox.deb -sSL https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.stretch_amd64.deb \
-    && echo '7e35a63f9db14f93ec7feeb0fce76b30c08f2057 wkhtmltox.deb' | sha1sum -c - \
+    && curl -o wkhtmltox.deb -sSL https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.buster_amd64.deb \
+    && echo 'ea8277df4297afc507c61122f3c349af142f31e5 wkhtmltox.deb' | sha1sum -c - \
     && apt-get install -y --no-install-recommends ./wkhtmltox.deb \
     && rm -rf /var/lib/apt/lists/* wkhtmltox.deb
+
 
 # install latest postgresql-client
 RUN set -x; \
@@ -52,10 +51,10 @@ RUN set -x; \
 RUN npm install -g rtlcss
 
 # Install Odoo
-ENV ODOO_VERSION=15.0
+ENV ODOO_VERSION=16.0
 ENV ODOO_DEPTH 1
-ARG ODOO_RELEASE=20220117
-ARG ODOO_SHA=318744c8bda1631040e9572f01b0ef2a2c7f42ea
+ARG ODOO_RELEASE=20230310
+ARG ODOO_SHA=98ae3919fe80e537531c55d74e91f57853e7a67a
 
 RUN curl -o odoo.deb -sSL http://nightly.odoo.com/${ODOO_VERSION}/nightly/deb/odoo_${ODOO_VERSION}.${ODOO_RELEASE}_all.deb \
     && echo "${ODOO_SHA} odoo.deb" | sha1sum -c - \
@@ -65,7 +64,7 @@ RUN curl -o odoo.deb -sSL http://nightly.odoo.com/${ODOO_VERSION}/nightly/deb/od
 
 # Copy entrypoint script and Odoo configuration file
 COPY ./entrypoint.sh /
-COPY ./odoo/15/conf/odoo.conf /etc/odoo/
+COPY ./odoo/16/conf/odoo.conf /etc/odoo/
 
 # Set permissions and Mount /var/lib/odoo to allow restoring filestore and /mnt/extra-addons for users addons
 RUN chown odoo /etc/odoo/odoo.conf \

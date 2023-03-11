@@ -7,4 +7,4 @@ ODOO_PATH="./odoo"
  ( echo "[options]" ; \
 	echo "\n #Reference: https://gist.github.com/Guidoom/d5db0a76ce669b139271a528a8a2a27f" ; \
         echo addons_path = /mnt/extra-addons ;  \
-        echo data_dir = /var/lib/odoo ) >> $ODOO_PATH/15/conf/odoo.conf
+        echo data_dir = /var/lib/odoo ) >> $ODOO_PATH/16/conf/odoo.conf

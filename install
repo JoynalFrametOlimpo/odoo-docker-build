@@ -1,12 +1,12 @@
 #!/bin/bash
-# Config and Install Odoo Server
-# Author: Joynal Framet Olimpo - Oct 2020
+# Config and Install Odoo Server 16.0
+# Author: Joynal Framet Olimpo - march 2023
 
 ODOO_PATH="./odoo"
-ODOO_VERSION="15.0"
+ODOO_VERSION="16.0"
 
 # Upgrade && Update
-apt upgrade && apt get update
+apt upgrade -y && apt get update -y
 
 # Set local datetime
 if [ -f /etc/localtime/ ]; then
@@ -61,12 +61,12 @@ if [ "$SO" = "centos" ]; then
      yum -y install make
 fi
 
-# Install docker and docker-compose (Ubuntu)
+# Install docker and docker-compose (Debian - Ubuntu)
 if [ "$SO" = "ubuntu" ]; then
 apt-get install make
   if [ ! -e /usr/bin/docker ] || [ ! -e /usr/bin/docker-compose ]; then
         echo "$(tput setaf 4)***************** Updating System ....  ************************************************$(tput setaf 3)"
-        apt-get update
+        apt get update -y
                 if [ ! -e /usr/bin/docker ]; then
 			echo "$(tput setaf 4)***************** Instaling DOCKER ... ******************************************$(tput setaf 3)"
                         snap install docker
@@ -81,21 +81,21 @@ apt-get install make
   fi
 fi
 
-if [ ! -d "$ODOO_PATH/15" ]; then
-    mkdir -p "$ODOO_PATH/15"
+if [ ! -d "$ODOO_PATH/16" ]; then
+    mkdir -p "$ODOO_PATH/16"
 fi
 
 # Generate odoo configuration file in new project
-if [ ! -f "$ODOO_PATH/15/conf/odoo.conf" ]; then
+if [ ! -f "$ODOO_PATH/16/conf/odoo.conf" ]; then
     echo "$(tput setaf 4)***************** Creating odoo.conf inside project path ... *********************$(tput setaf 3)"
-    mkdir "$ODOO_PATH/15/conf/"
+    mkdir "$ODOO_PATH/16/conf/"
     ## build odoo file
         echo "$(tput setaf 4)***************** Building odoo.conf  *********>"
         sh ./script/conf
 fi
 
 # Building Odoo Image
-echo "$(tput setaf 4)***************** Building odoo image odoo:14.0 ... *********************$(tput setaf 3)"
+echo "$(tput setaf 4)***************** Building odoo image odoo:16.0 ... *********************$(tput setaf 3)"
 make build
 
 
@@ -105,12 +105,12 @@ sh ./script/env
 
 
 chmod +x ./entrypoint.sh ./wait-for-psql.py
-chmod -R 755 "$ODOO_PATH/15/"
+chmod -R 755 "$ODOO_PATH/16/"
 
 echo "$(tput setaf 4)****************** Up services .... *******************************$(tput setaf 3)"
 make compose
 
-#chmod -R 755 "$ODOO_PATH/15/"
-chown -R $USER "$ODOO_PATH/15/"
+
+chown -R $USER "$ODOO_PATH/16/"
 make logs
 

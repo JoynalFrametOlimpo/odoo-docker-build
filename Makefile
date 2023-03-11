@@ -1,5 +1,5 @@
 build:
-	docker build -t odoo:15.0 .
+	docker build -t odoo:16.0 .
 compose:
 	docker-compose up -d
 stop:
@@ -8,7 +8,7 @@ start:
 	docker-compose start
 clear:
 	make stop
-	docker-compose rm -f && docker volume prune -f
+	docker-compose rm -f && docker volume rm odoo-docker-build_database odoo-docker-build_filestore
 prune:
 	docker system prune -af
 logs:
