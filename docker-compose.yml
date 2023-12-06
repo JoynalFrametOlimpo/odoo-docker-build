@@ -38,6 +38,7 @@ services:
             - DB_ENV_POSTGRES_USER=$DB_USER
             - DB_ENV_POSTGRES_PASSWORD=$DB_PASSWORD
             - DB_ENV_POSTGRES_DB=postgres
+            
 networks:
      odoo-network:
        driver: bridge
