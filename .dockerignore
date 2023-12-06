@@ -1,4 +1,6 @@
 .git*
 odoo-develop
+odoo
 README
 backup-environment
+.env

@@ -1,5 +1,5 @@
 build:
-	docker build -t odoo:16.0 .
+	docker build -t odoo:17.0 .
 compose:
 	docker-compose up -d
 stop:

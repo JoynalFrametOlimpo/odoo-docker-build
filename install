@@ -1,12 +1,13 @@
 #!/bin/bash
-# Config and Install Odoo Server 16.0
-# Author: Joynal Framet Olimpo - march 2023
+# Config and Install Odoo Server 17.0
+# Author: Joynal Framet Olimpo - december 2023
+# Support only for Ubuntu 
 
 ODOO_PATH="./odoo"
-ODOO_VERSION="16.0"
+ODOO_VERSION="17.0"
 
 # Upgrade && Update
-apt upgrade -y && apt get update -y
+apt upgrade -y && apt update -y
 
 # Set local datetime
 if [ -f /etc/localtime/ ]; then
@@ -36,30 +37,6 @@ fi
 SO=$ID
 
 echo $SO
-# Install docker and docker-compose (Centos)
-if [ "$SO" = "centos" ]; then
-     echo "(tput setaf 4)***************** Updating System ... ************************************************$(tput setaf 3)"
-     yum -y update
-     echo "(tput setaf 4)***************** Instaling project dependencies ... ***************************************$(tput setaf 3)"
-     yum install -y yum-utils device-mapper-persistent-data lvm2 --no-install-recommends
-     yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-     echo "(tput setaf 4)***************** Instaling Docker ... ******************************************$(tput setaf 3)"
-     yum install -y docker-ce
-     usermod -aG docker $(whoami)
-     gpasswd -a ${USER} docker
-     systemctl enable docker.service
-     systemctl start docker.service
-     yum install -y epel-release
-     echo "(tput setaf 4)*************** Instaling Python-pip ... ****************************************$(tput setaf 3)"
-     yum install -y python-pip --no-install-recommends
-     echo "(tput setaf 4)************** Instaling DockerCompose .... *************************************$(tput setaf 3)"
-     pip install docker-compose --no-install-recommends
-     echo "(tput setaf 4)************* Upgrading Python ... *********************************************$(tput setaf 3)"
-     yum -y upgrade python --no-install-recommends
-     docker version
-     docker-compose version
-     yum -y install make
-fi
 
 # Install docker and docker-compose (Debian - Ubuntu)
 if [ "$SO" = "ubuntu" ]; then
@@ -81,21 +58,21 @@ apt-get install make
   fi
 fi
 
-if [ ! -d "$ODOO_PATH/16" ]; then
-    mkdir -p "$ODOO_PATH/16"
+if [ ! -d "$ODOO_PATH/17" ]; then
+    mkdir -p "$ODOO_PATH/17"
 fi
 
 # Generate odoo configuration file in new project
-if [ ! -f "$ODOO_PATH/16/conf/odoo.conf" ]; then
+if [ ! -f "$ODOO_PATH/17/conf/odoo.conf" ]; then
     echo "$(tput setaf 4)***************** Creating odoo.conf inside project path ... *********************$(tput setaf 3)"
-    mkdir "$ODOO_PATH/16/conf/"
+    mkdir "$ODOO_PATH/17/conf/"
     ## build odoo file
         echo "$(tput setaf 4)***************** Building odoo.conf  *********>"
         sh ./script/conf
 fi
 
 # Building Odoo Image
-echo "$(tput setaf 4)***************** Building odoo image odoo:16.0 ... *********************$(tput setaf 3)"
+echo "$(tput setaf 4)***************** Building odoo image odoo:17.0 ... *********************$(tput setaf 3)"
 make build
 
 
@@ -105,12 +82,12 @@ sh ./script/env
 
 
 chmod +x ./entrypoint.sh ./wait-for-psql.py
-chmod -R 755 "$ODOO_PATH/16/"
+chmod -R 755 "$ODOO_PATH/17/"
 
 echo "$(tput setaf 4)****************** Up services .... *******************************$(tput setaf 3)"
 make compose
 
 
-chown -R $USER "$ODOO_PATH/16/"
+chown -R $USER "$ODOO_PATH/17/"
 make logs
 
