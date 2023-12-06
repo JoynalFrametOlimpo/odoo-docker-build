@@ -4,7 +4,6 @@ import psycopg2
 import sys
 import time
 
-
 if __name__ == '__main__':
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument('--db_host', required=True)
