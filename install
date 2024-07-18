@@ -49,7 +49,7 @@ apt-get install make
                         snap install docker
                         groupadd docker
                         usermod -aG docker $USER
-                        newgrp docker
+                        #newgrp docker
                 fi
                 if [ ! -e /usr/bin/docker-compose ]; then
                         echo "$(tput setaf 4)***************** Instaling DockerCompose ... ******************************************$(tput setaf 3)"
