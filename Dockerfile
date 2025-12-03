@@ -65,9 +65,9 @@ RUN set -x; \
 RUN npm install -g rtlcss
 
 # Install Odoo
-ENV ODOO_VERSION=18.0
-ARG ODOO_RELEASE=20250218
-ARG ODOO_SHA=122896192ed221711dd471d27b2bd2f934c2ec07
+ENV ODOO_VERSION=19.0
+ARG ODOO_RELEASE=20251121
+ARG ODOO_SHA=6357a789f287485b002acf6888fe8cdd45e2d5d8
     
 RUN curl -o odoo.deb -sSL http://nightly.odoo.com/${ODOO_VERSION}/nightly/deb/odoo_${ODOO_VERSION}.${ODOO_RELEASE}_all.deb \
     && echo "${ODOO_SHA} odoo.deb" | sha1sum -c - \
@@ -77,7 +77,7 @@ RUN curl -o odoo.deb -sSL http://nightly.odoo.com/${ODOO_VERSION}/nightly/deb/od
 
 # Copy entrypoint script and Odoo configuration file
 COPY ./entrypoint.sh /
-COPY ./odoo/18/conf/odoo.conf /etc/odoo/
+COPY ./odoo/19/conf/odoo.conf /etc/odoo/
 
 # Set permissions and Mount /var/lib/odoo to allow restoring filestore and /mnt/extra-addons for users addons
 RUN chown odoo /etc/odoo/odoo.conf \

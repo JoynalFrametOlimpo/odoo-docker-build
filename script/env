@@ -3,22 +3,26 @@
 # Generate environment file
 ## .ENV
 
-      ( echo "\n# Odoo Parameters" ; \
+      ( echo "# Odoo Parameters" ; \
         echo ODOO_IMAGE=odoo ; \
-        echo ODOO_VERSION=17.0 ; \
+        echo ODOO_VERSION=19.0 ; \
         echo ODOO_PROXY_MODE=true ;  \
         echo ODOO_ADMIN_PASS=$(openssl rand -base64 32) ; \
-        echo "\n# Odoo.conf" ; \
-        echo CONF_LOCAL_PATH=./odoo/17/conf ; \
+        echo "" ; \
+        echo "# Odoo.conf" ; \
+        echo CONF_LOCAL_PATH=./odoo/19/conf ; \
         echo CONF_CONTAINER_PATH=/etc/odoo ; \
-        echo "\n# Customs Adddons" ; \
-        echo EXTRA_ADDONS_LOCAL_PATH=./odoo/17/extra-addons ; \
+        echo "" ; \
+        echo "# Customs Adddons" ; \
+        echo EXTRA_ADDONS_LOCAL_PATH=./odoo/19/extra-addons ; \
         echo EXTRA_ADDONS_CONTAINER_PATH=/mnt/extra-addons ; \
-        echo "\n# Odoo Filestore session" ; \
+        echo "" ; \
+        echo "# Odoo Filestore session" ; \
         echo ODOO_FILESTORE_CONTAINER_PATH=/var/lib/odoo ; \
-        echo "\n# Postgres Parameters" ; \
+        echo "" ; \
+        echo "# Postgres Parameters" ; \
         echo DB_IMAGE=postgres ; \
-        echo DB_VERSION=16.4-alpine; \
+        echo DB_VERSION=18-alpine; \
         echo DB_NAME=odoo ; \
         echo DB_USER=odoo ; \
         echo DB_filter=.* ; \

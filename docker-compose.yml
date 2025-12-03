@@ -1,4 +1,3 @@
-version: '3.3'
 services:
     db:
         image: $DB_IMAGE:$DB_VERSION

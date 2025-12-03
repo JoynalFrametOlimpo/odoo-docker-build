@@ -1,17 +1,24 @@
 #!/bin/bash
-# Config and Install Odoo Server 17.0
-# Author: Joynal Framet Olimpo - december 2023
-# Support only for Ubuntu 
+# Config and Install Odoo Server 19.0
+# Author: Joynal Framet Olimpo - December 2025
+# Support only for Ubuntu
+
+set -e  # Exit on error
 
 ODOO_PATH="./odoo"
-ODOO_VERSION="17.0"
+ODOO_VERSION="19.0"
 
-# Upgrade && Update
-apt upgrade -y && apt update -y
+# Function to print colored output
+print_info() {
+    echo -e "\033[34m***************** $1 ********************\033[0m"
+}
+
+# Upgrade && Update (optional, comment out if not needed)
+# apt upgrade -y && apt update -y
 
 # Set local datetime
-if [ -f /etc/localtime/ ]; then
-  cp /usr/share/zoneinfo/America/Guayaquil /etc/localtime
+if [ -L /etc/localtime ]; then
+    ln -sf /usr/share/zoneinfo/America/Guayaquil /etc/localtime
 fi
 
 dt=$(date '+%d-%m-%Y--%H-%M-%S')
@@ -23,71 +30,71 @@ fi
 
 # Make Backup folder for security reason
 if [ -d ./odoo ]; then
-     echo "(tput setaf 4)***************** There is an installation in current directory, copying to backup folder for security ********************$(tput setaf 3)"
-     mv ./odoo "./backup-environment/odoo.$dt"
-     rm -rf "$ODOO_PATH"
+    print_info "There is an installation in current directory, copying to backup folder for security"
+    mv ./odoo "./backup-environment/odoo.$dt"
+    rm -rf "$ODOO_PATH"
 fi
 
-if [ -e  "./.env" ]; then
+if [ -e "./.env" ]; then
     mv ./.env "./backup-environment/odoo.$dt/"
 fi
 
-# Install docker - docker-compose
+# Install Docker and Docker Compose
 . /etc/os-release
 SO=$ID
 
-echo $SO
+echo "$SO"
 
-# Install docker and docker-compose (Debian - Ubuntu)
 if [ "$SO" = "ubuntu" ]; then
-apt-get install make
-  if [ ! -e /usr/bin/docker ] || [ ! -e /usr/bin/docker-compose ]; then
-        echo "$(tput setaf 4)***************** Updating System ....  ************************************************$(tput setaf 3)"
-        apt update -y
-                if [ ! -e /usr/bin/docker ]; then
-			echo "$(tput setaf 4)***************** Instaling DOCKER ... ******************************************$(tput setaf 3)"
-                        snap install docker
-                        groupadd docker
-                        usermod -aG docker $USER
-                        #newgrp docker
-                fi
-                if [ ! -e /usr/bin/docker-compose ]; then
-                        echo "$(tput setaf 4)***************** Instaling DockerCompose ... ******************************************$(tput setaf 3)"
-			apt -y install docker-compose --no-install-recommends
-                fi
-  fi
+    apt-get update -y
+    apt-get install -y ca-certificates curl gnupg lsb-release make
+
+    # Remove old docker-compose if installed
+    apt-get remove -y docker-compose || true
+
+    # Install Docker using official repo
+    if ! command -v docker &> /dev/null; then
+        print_info "Installing Docker"
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+        apt-get update -y
+        apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+        groupadd docker || true
+        usermod -aG docker "$USER"
+    fi
+
+    # Ensure Docker Compose plugin is installed
+    if ! docker compose version &> /dev/null; then
+        apt-get install -y docker-compose-plugin
+    fi
 fi
 
-if [ ! -d "$ODOO_PATH/17" ]; then
-    mkdir -p "$ODOO_PATH/17"
+if [ ! -d "$ODOO_PATH/19" ]; then
+    mkdir -p "$ODOO_PATH/19"
 fi
 
 # Generate odoo configuration file in new project
-if [ ! -f "$ODOO_PATH/17/conf/odoo.conf" ]; then
-    echo "$(tput setaf 4)***************** Creating odoo.conf inside project path ... *********************$(tput setaf 3)"
-    mkdir "$ODOO_PATH/17/conf/"
-    ## build odoo file
-        echo "$(tput setaf 4)***************** Building odoo.conf  *********>"
-        sh ./script/conf
+if [ ! -f "$ODOO_PATH/19/conf/odoo.conf" ]; then
+    print_info "Creating odoo.conf inside project path"
+    mkdir -p "$ODOO_PATH/19/conf/"
+    print_info "Building odoo.conf"
+    bash ./script/conf
 fi
 
 # Building Odoo Image
-echo "$(tput setaf 4)***************** Building odoo image odoo:17.0 ... *********************$(tput setaf 3)"
+print_info "Building odoo image odoo:19.0"
 make build
 
-
 # Generate environment file
-echo "$(tput setaf 4)***************** Building env .... *********************$(tput setaf 3)"
-sh ./script/env
-
+print_info "Building env"
+bash ./script/env
 
 chmod +x ./entrypoint.sh ./wait-for-psql.py
-chmod -R 755 "$ODOO_PATH/17/"
+chmod -R 755 "$ODOO_PATH/19/"
 
-echo "$(tput setaf 4)****************** Up services .... *******************************$(tput setaf 3)"
+print_info "Up services"
 make compose
 
-
-chown -R $USER "$ODOO_PATH/17/"
+chown -R "$USER" "$ODOO_PATH/19/"
 make logs
 
